@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "types": [],
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "target": "ES2016",
+    "newLine": "LF",
+    "strict": true,
+    "noPropertyAccessFromIndexSignature": false,
+  },
+  "files": [
+    "index.ts"
+  ],
+  "include": [
+    "**/*.d.ts"
+  ]
+}
