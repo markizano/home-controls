@@ -1,10 +1,19 @@
 #!/usr/bin/env ts-node
 
 import { exec, ExecException, spawn } from 'node:child_process';
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { PaClient, Direction } from './paclient';
 
+/**
+ * @property {string[]} Xclipboards valid xclip clipboards.
+ 
+ */
 const Xclipboards = ['primary', 'secondary', 'clipboard'];
+
+/**
+ * @property {string[]} MimeTypes valid mime types accepted this will handle.
+ */
+const MimeTypes = ['image/png', 'image/jpg', 'image/gif'];
 
 const app = express();
 const pc = new PaClient();
@@ -36,21 +45,37 @@ app.get('/clip/:which', (req, res) => {
         if (err) {
             res.send({status: 500, message: 'Error fetching clipboard', error: err});
         } else {
+            console.log(`Clipboard contents: ${stdout}`);
             res.send({status: 200, message: 'Clipboard contents', clip: stdout});
         }
     });
 });
 
-app.post('/clip/:which', (req, res) => {
-    const { which } = req.params;
-    const { clip } = req.body;
+app.post('/clip/:which', (req: Request, res: Response) => {
+    const which = ((p) => Xclipboards.includes(p.which)? p.which: 'primary')(req.params);
+    const clip = req.body?.clip ?? '';
+    const target = req.body?.target ?? 'text/plain';
+    const display = process.env.DISPLAY;
+    console.log(`Copying to ${which} clipboard on display ${display}`);
+    console.debug(clip);
     // use xclip to set the clipboard.
-    const xclip = spawn(`xclip -l 1 -selection '${which}'`);
-    xclip.stdin.write(clip);
-    xclip.stdin.end();
-    xclip.on('close', (code: number, signal: string) => {
-        res.send({status: 200, message: 'Clipboard set'});
-    });
+    try {
+        const xargs = ['-l', '1', '-silent', '-selection', which];
+        if ( MimeTypes.includes(target) ) {
+            xargs.push('-t', target);
+        }
+        const xclip = spawn('xclip', xargs);
+        xclip.stdin.write(Buffer.from(clip.toString(), 'utf8'));
+        xclip.stdin.end();
+        xclip.on('error', (err: ExecException) => {
+            res.send({status: 500, message: 'Error setting clipboard', error: err});
+        });
+        xclip.unref();
+        res.send({status: 200, message: 'Clipboard set', clip: clip, target, display, });
+    } catch (e) {
+        console.log(e);
+        res.send({status: 500, message: 'Exception setting clipboard', error: e});
+    }
 });
 
 app.on('ready', () => {
