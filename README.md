@@ -1,27 +1,27 @@
 # HomeControls
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.2.0.
+This project was created as a way to give me a personal control panel to control and communicate among my android- and linux-based devices. I feel insufficient as a native Android developer, so I am compensating with my Angluar-fu and ExpressJS-fu. In this way, my devices can communicate in ways apps and cables cannot.
 
-## Development server
+# Synopsis
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+The server component is written in ExpressJS but compiled from TypeScript to help with keeping data structures consistent.
 
-## Code scaffolding
+The service runs on a Linux machine with or without an X server and Pulseaudio for the audio service. (I would like to explore and support JACK in future #FutureFeature).
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+The client runs in a browser on a remote device.
 
-## Build
+The client can control the server in various ways. The server can communicate with clients in various ways.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+I can expand on this as I develop out more ideas. However, this is now a repository and a means by which I can build out these features.
 
-## Running unit tests
+# Features
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Audio Controls
+With the server plugged into Pulse as an audio client, you can control the volume without being connected to the keyboard. By default uses a 3% step in volume (@TODO make this a configurable).
 
-## Running end-to-end tests
+## Clipboard Management
+Far too often, I am left with data on either mobile or laptop or server clipboard data that I want to transfer to the other. Using the "note to self" feature on Signal-Desktop and Signal-Android is okay, but something more seamless would be nice. This now grants me a button to directly copy and paste from mobile to laptop.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+# Wishlist
+- Authentication and Security: I understand this app is an incredible insecurity if exposed in the wrong ways. Mitigate this with a minimal level of authentication and security.
+- Messaging: Toast messages from server to clients? Broadcast/subscription abilities.
