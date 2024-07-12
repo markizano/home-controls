@@ -30,18 +30,19 @@ class PaClient {
             if (!(0, node_fs_1.existsSync)(PA_COOKIE) || (0, node_fs_1.statSync)(PA_COOKIE).size === 0) {
                 if ('PULSE_COOKIE' in process.env && process.env.PULSE_COOKIE) {
                     if (process.env.PULSE_COOKIE.startsWith('hex')) {
-                        console.log('Found pulse cookie env var as hex. Writing to cookie file.');
+                        console.log('Found pulse cookie env var as hex.');
                         this.client.cookie = Buffer.from(process.env.PULSE_COOKIE.split(':', 2)[1], 'hex');
                     }
                     else if (process.env.PULSE_COOKIE.startsWith('base64')) {
-                        console.log('Found pulse cookie env var as base64. Writing to cookie file.');
+                        console.log('Found pulse cookie env var as base64.');
                         this.client.cookie = Buffer.from(process.env.PULSE_COOKIE.split(':', 2)[1], 'base64');
                     }
                 }
             }
             yield this.client.connect();
             this.app.get('/api/volume', (req, res) => this.getVolume(req, res));
-            this.app.get('/api/volume/:direction', (req, res) => this.setVolume(req, res));
+            this.app.post('/api/volume', (req, res) => this.setVolume(req, res));
+            this.app.post('/api/volume/:direction', (req, res) => this.setVolume(req, res));
             process.on('exit', () => {
                 this.client.disconnect();
             });
@@ -49,22 +50,28 @@ class PaClient {
     }
     setVolume(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a, _b;
+            var _a;
             const vols = [];
-            const direction = (_b = (_a = req.params) === null || _a === void 0 ? void 0 : _a.direction) !== null && _b !== void 0 ? _b : 'up';
             const step = parseFloat(req.params.step) || 0.03;
             const response = { status: 0, message: '', volume: [] };
             try {
                 const sinks = yield this.client.getSinkList();
                 for (const sink of sinks) {
-                    const vol = sink.channelVolume.volumes[0], delta = (step * vol), newVol = direction === 'up' ? vol + delta : vol - delta;
+                    let newVol;
+                    if (typeof ((_a = req.params) === null || _a === void 0 ? void 0 : _a.direction) !== 'undefined') {
+                        const vol = sink.channelVolume.volumes[0], delta = (step * vol);
+                        newVol = req.params.direction === 'up' ? vol + delta : vol - delta;
+                    }
+                    else {
+                        newVol = (req.body.volume / 100) * 65534;
+                    }
                     console.log(`Setting volume for sink ${sink.name} to ${newVol}`);
                     vols.push(newVol);
                     yield this.client.setSinkVolume(sink.index, newVol);
                 }
                 response.status = 201;
                 response.volume = vols;
-                response.message = `Volume ${direction} with volumes: ${vols}`;
+                response.message = `Volume set with volumes: ${vols}`;
             }
             catch (err) {
                 console.error('Exception setting volume: ', err);

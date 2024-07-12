@@ -4,7 +4,7 @@ import { existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 type Direction = 'up' | 'down';
-type XclipResponse = {status: number, message: string, volume: number[], error?: Error};
+type VolumeResponse = {status: number, message: string, volume: number[], error?: Error};
 const PA_CLIENT = process.env.PA_CLIENT ?? 'unix:/tmp/pulse-server';
 const PA_COOKIE = join(process.env.HOME ?? '/', '.config', 'pulse', 'cookie');
 
@@ -31,7 +31,8 @@ export class PaClient {
         }
         await this.client.connect();
         this.app.get('/api/volume', (req, res) => this.getVolume(req, res));
-        this.app.get('/api/volume/:direction', (req, res) => this.setVolume(req, res));
+        this.app.post('/api/volume', (req, res) => this.setVolume(req, res));
+        this.app.post('/api/volume/:direction', (req, res) => this.setVolume(req, res));
 
         process.on('exit', () => {
             this.client.disconnect();
@@ -40,20 +41,27 @@ export class PaClient {
 
     async setVolume(req: Request, res: Response): Promise<number[]> {
         const vols: number[] = [];
-        const direction: Direction = <Direction>req.params?.direction ?? 'up';
         const step: number = parseFloat(req.params.step) || 0.03;
-        const response: XclipResponse = {status: 0, message: '', volume: []};
+        const response: VolumeResponse = {status: 0, message: '', volume: []};
         try {
             const sinks = await this.client.getSinkList();
             for (const sink of sinks) {
-                const vol = sink.channelVolume.volumes[0], delta = (step * vol), newVol = direction === 'up' ? vol + delta : vol - delta;
+                let newVol: number;
+                if ( typeof req.params?.direction !== 'undefined' ) {
+                    const vol = sink.channelVolume.volumes[0],
+                      delta = (step * vol);
+                    newVol = req.params.direction === 'up' ? vol + delta : vol - delta;
+
+                } else {
+                    newVol = (req.body.volume / 100) * 65534;
+                }
                 console.log(`Setting volume for sink ${sink.name} to ${newVol}`);
                 vols.push( newVol );
                 await this.client.setSinkVolume(sink.index, newVol);
             }
             response.status = 201;
             response.volume = vols;
-            response.message = `Volume ${direction} with volumes: ${vols}`;
+            response.message = `Volume set with volumes: ${vols}`;
         } catch (err) {
             console.error('Exception setting volume: ', err);
             response.status = 500;
@@ -65,7 +73,7 @@ export class PaClient {
     }
 
     async getVolume(req: Request, res: Response): Promise<void> {
-        const response: XclipResponse = {status: 0, message: '', volume: []};
+        const response: VolumeResponse = {status: 0, message: '', volume: []};
         try {
             const sinks = await this.client.getSinkList();
             response.volume = sinks.map(sink => sink.channelVolume.volumes[0]);

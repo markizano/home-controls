@@ -1,7 +1,11 @@
 <p>
-    Volume ( {{ (vol * 100).toFixed(2) }} %) :<br />
+    Volume ( {{ vol.toFixed(2) }} %) :<br />
     <img src="assets/volume-down.png" alt="volume-up" (click)="volumeDown()" />
     <img src="assets/volume-up.png" alt="volume-down" (click)="volumeUp()" />
+    <br />
+    <mat-slider min="0" max="100" step="0.1" showTickMarks discrete [displayWith]="formatLabel">
+        <input matSliderThumb [value]="vol" (valueChange)="volumeSet($event)" >
+    </mat-slider>
 </p>
 <p>
     Clipboard: <br />

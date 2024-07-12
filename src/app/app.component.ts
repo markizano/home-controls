@@ -2,6 +2,7 @@ import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http'
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ClipboardModule, Clipboard } from '@angular/cdk/clipboard';
+import { MatSliderModule } from '@angular/material/slider';
 
 type VolumeResponse = { status: number, message: string, volume: number[] };
 type ClipResponse = { status: number, message: string, clip: string };
@@ -13,6 +14,7 @@ type ClipResponse = { status: number, message: string, clip: string };
         RouterOutlet,
         HttpClientModule,
         ClipboardModule,
+        MatSliderModule,
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css'
@@ -27,22 +29,33 @@ export class AppComponent {
     ngOnInit() {
         this.httpClient.get<VolumeResponse>('/api/volume', {}).subscribe((x: VolumeResponse) => {
             console.log(x);
-            this.vol = x.volume[0] / 65534;
+            this.vol = x.volume[0] / 65534 * 100;
         });
     }
 
     volumeUp() {
-        this.httpClient.get<VolumeResponse>('/api/volume/up', {}).subscribe((x: VolumeResponse) => {
+        this.httpClient.post<VolumeResponse>('/api/volume/up', {}).subscribe((x: VolumeResponse) => {
             console.log(x);
-            this.vol = x.volume[0] / 65534;
+            this.vol = x.volume[0] / 65534 * 100;
         });
     }
 
     volumeDown() {
-        this.httpClient.get<VolumeResponse>('/api/volume/down', {}).subscribe((x) => {
+        this.httpClient.post<VolumeResponse>('/api/volume/down', {}).subscribe((x) => {
             console.log(x);
-            this.vol = x.volume[0] / 65534;
+            this.vol = x.volume[0] / 65534 * 100;
         });
+    }
+
+    volumeSet(value: number) {
+        this.httpClient.post<VolumeResponse>(`/api/volume`, {volume: value}).subscribe((x) => {
+            console.log(x);
+            this.vol = x.volume[0] / 65534 * 100;
+        });
+    }
+
+    formatLabel(value: number): string {
+        return `${value}%`;
     }
 
     pbCopy() {
