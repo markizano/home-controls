@@ -8,10 +8,10 @@ config();
 import { PaClient } from './paclient';
 import { XclipClient } from './xclip';
 
+const PORT = process.env.PORT ?? 41173;
 const app = express();
 const pc = new PaClient(app);
 const xclip = new XclipClient(app);
-const PORT = process.env.PORT ?? 41173;
 
 app.use(express.json());
 

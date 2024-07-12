@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+# Check to see if the service account is present. Delete as necessary
+grep -q hcuser /etc/passwd && userdel hcuser
+grep -q kizano /etc/group && groupdel kizano || true # Silently fail on this in case it's used outside this package.

@@ -3,13 +3,12 @@ import PulseAudio from '@tmigone/pulseaudio'
 import { existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
-type Direction = 'up' | 'down';
 type VolumeResponse = {status: number, message: string, volume: number[], error?: Error};
 const PA_CLIENT = process.env.PA_CLIENT ?? 'unix:/tmp/pulse-server';
 const PA_COOKIE = join(process.env.HOME ?? '/', '.config', 'pulse', 'cookie');
 
 export class PaClient {
-    client: PulseAudio = new PulseAudio(PA_CLIENT, PA_COOKIE);
+    client: PulseAudio = new PulseAudio(PA_CLIENT, existsSync(PA_COOKIE)? PA_COOKIE: undefined);
     app: Express;
 
     constructor(app: Express) {

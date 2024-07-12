@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+# Check to see if the service account is present. Create as necessary.
+grep -q kizano /etc/group || groupadd --gid=200 kizano
+grep -q hcuser /etc/passwd || useradd -r -s /bin/false -d /usr/share/kizano/home-controls -g $(getent group kizano | cut -d: -f3) hcuser

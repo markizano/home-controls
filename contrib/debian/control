@@ -1,0 +1,13 @@
+Package: home-controls
+Version: 0.0.1
+License: unknown
+Vendor: Markizano Draconus <markizano@markizano.net>
+Architecture: amd64
+Maintainer: Markizano Draconus <markizano@markizano.net>
+Installed-Size: 0
+Depends: nodejs (>=18)
+Section: default
+Priority: optional
+Homepage: https://github.com/markizano/home-controls
+Description: 
+  A desktop service to automate tasks.

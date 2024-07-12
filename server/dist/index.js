@@ -19,10 +19,10 @@ const dotenv_1 = require("dotenv");
 (0, dotenv_1.config)();
 const paclient_1 = require("./paclient");
 const xclip_1 = require("./xclip");
+const PORT = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 41173;
 const app = (0, express_1.default)();
 const pc = new paclient_1.PaClient(app);
 const xclip = new xclip_1.XclipClient(app);
-const PORT = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 41173;
 app.use(express_1.default.json());
 if ('WEBROOT' in process.env && process.env.WEBROOT) {
     app.use(express_1.default.static(process.env.WEBROOT));
