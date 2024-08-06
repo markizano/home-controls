@@ -45,7 +45,7 @@ export class XclipClient {
         const target = req.body?.target ?? 'text/plain';
         const display = process.env.DISPLAY;
         console.log(`Copying to ${which} clipboard on display ${display}`);
-        console.debug(clip);
+        console.debug(req);
         // use xclip to set the clipboard.
         try {
             const xargs = ['-l', '1', '-silent', '-selection', which];

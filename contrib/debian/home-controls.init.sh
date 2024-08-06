@@ -39,9 +39,15 @@ do_start() {
         return 1
     fi
 
-    start-stop-daemon --start --quiet --pidfile $PIDFILE --make-pidfile --background \
+    start-stop-daemon --start --quiet \
+      --pidfile $PIDFILE \
+      --make-pidfile \
+      --background \
       --chuid "$DAEMON_USER:$DAEMON_GROUP" \
-      --user $DAEMON_USER --group $DAEMON_GROUP --exec $DAEMON -- $DAEMON_SCRIPT || return 2
+      --startas /bin/bash \
+      --user $DAEMON_USER \
+      --group $DAEMON_GROUP \
+      -- -c "$DAEMON $DAEMON_SCRIPT |& NO_STDERR=1 log $DAEMON_NAME" || return 2
 }
 
 do_stop() {
