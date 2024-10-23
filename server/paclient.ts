@@ -13,6 +13,7 @@ export class PaClient {
 
     constructor(app: Express) {
         this.app = app;
+        this.connect().then(() => app.emit('ready'));
     }
 
     async connect(): Promise<void> {

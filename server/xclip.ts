@@ -45,10 +45,10 @@ export class XclipClient {
         const target = req.body?.target ?? 'text/plain';
         const display = process.env.DISPLAY;
         console.log(`Copying to ${which} clipboard on display ${display}`);
-        console.debug(req);
+        console.debug(req.body);
         // use xclip to set the clipboard.
         try {
-            const xargs = ['-l', '1', '-silent', '-selection', which];
+            const xargs = ['-l', '1', '-selection', which];
             if ( MimeTypes.includes(target) ) {
                 xargs.push('-t', target);
             }
@@ -60,8 +60,9 @@ export class XclipClient {
             });
             xclip.unref();
             res.send({status: 200, message: 'Clipboard set', clip: clip, target, display, });
+            console.log(`Clipboard set to: ${clip}`);
         } catch (e) {
-            console.log(e);
+            console.error(e);
             res.send({status: 500, message: 'Exception setting clipboard', error: e});
         }
     }

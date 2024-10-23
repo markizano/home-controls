@@ -10,10 +10,11 @@ import { XclipClient } from './xclip';
 
 const PORT = process.env.PORT ?? 41173;
 const app = express();
-const pc = new PaClient(app);
-const xclip = new XclipClient(app);
 
 app.use(express.json());
+
+new PaClient(app);
+new XclipClient(app);
 
 if ( 'WEBROOT' in process.env && process.env.WEBROOT ) {
     app.use(express.static(process.env.WEBROOT));
@@ -36,8 +37,3 @@ process.on('SIGINT', () => {
     console.log('Caught interrupt signal');
     process.exit(0);
 });
-
-(async () => {
-    await pc.connect();
-    app.emit('ready');
-})();

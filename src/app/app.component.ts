@@ -71,12 +71,13 @@ export class AppComponent {
         navigator.clipboard.readText().then((clipData) => {
             const clip = { clip: clipData, target: 'text/plain' };
             const opts = { headers: new HttpHeaders({'Content-Type': 'application/json'}) };
-            this.log('pasting', clipData, opts)
-            this.httpClient.post<string>('/api/clip/primary', clip, opts).subscribe((val) => {
+            this.log('pasting', clipData, opts);
+            const res = (val: string) => {
                 console.log(val);
                 this.log('pasted value', val);
-            });
-            this.httpClient.post<string>('/api/clip/clipboard', clip, opts).subscribe();
+            };
+            this.httpClient.post<string>('/api/clip/primary', clip, opts).subscribe(res);
+            this.httpClient.post<string>('/api/clip/clipboard', clip, opts).subscribe(res);
         });
     }
 
