@@ -81,6 +81,23 @@ export class AppComponent {
         });
     }
 
+    /**
+     * Puts the display to sleep.
+     */
+    sleepDisplay() {
+        const res = {
+            next: (x: any) => {
+                console.log(x);
+                this.log(x.message);
+            },
+            error: (err: any) => {
+                console.error('Error putting display to sleep:', err);
+                this.log('Error putting display to sleep:', err);
+            }
+        };
+        this.httpClient.get<{status: number, message: string}>('/api/sleepDisplay', {}).subscribe(res);
+    }
+
     log(...args: unknown[]): void;
     log(msg: unknown): void;
     log(msg: string): void {

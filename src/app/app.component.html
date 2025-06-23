@@ -12,5 +12,9 @@
     <img src="assets/copy.png" alt="copy" (click)="pbCopy()" />
     <img src="assets/paste.png" alt="copy" (click)="pbPaste()" />
 </p>
+<p>
+    Display: <br />
+    <img src="assets/display.png" alt="copy" (click)="sleepDisplay()" />
+</p>
 <div class="messages">@for(message of messages; track message) { <p>{{ message }}</p> }</div>
 <router-outlet />

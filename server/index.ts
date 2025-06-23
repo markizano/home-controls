@@ -7,6 +7,7 @@ config();
 
 import { PaClient } from './paclient';
 import { XclipClient } from './xclip';
+import { ControlsClient } from './control';
 
 const PORT = process.env.PORT ?? 41173;
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 
 new PaClient(app);
 new XclipClient(app);
+new ControlsClient(app);
 
 if ( 'WEBROOT' in process.env && process.env.WEBROOT ) {
     app.use(express.static(process.env.WEBROOT));

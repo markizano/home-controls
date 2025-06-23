@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": "./",
     "outDir": "dist",
     "types": [],
     "module": "CommonJS",
@@ -10,7 +11,10 @@
     "noPropertyAccessFromIndexSignature": false,
   },
   "files": [
-    "index.ts"
+    "index.ts",
+    "control.ts",
+    "paclient.ts",
+    "xclip.ts"
   ],
   "include": [
     "**/*.d.ts"

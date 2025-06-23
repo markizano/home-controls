@@ -23,6 +23,7 @@ class PaClient {
     constructor(app) {
         this.client = new pulseaudio_1.default(PA_CLIENT, (0, node_fs_1.existsSync)(PA_COOKIE) ? PA_COOKIE : undefined);
         this.app = app;
+        this.connect().then(() => app.emit('ready'));
     }
     connect() {
         return __awaiter(this, void 0, void 0, function* () {

@@ -19,7 +19,7 @@ class XclipClient {
     }
     getClipboard(req, res) {
         var _a;
-        const which = (_a = req.params.which) !== null && _a !== void 0 ? _a : 'primary';
+        const which = (_a = req.params.which) !== null && _a !== void 0 ? _a : 'clipboard';
         // use xclip to fetch what's on the clipboard.
         (0, node_child_process_1.exec)(`xclip -o -selection '${which}'`, (err, stdout, stderr) => {
             if (err) {
@@ -33,15 +33,15 @@ class XclipClient {
     }
     setClipboard(req, res) {
         var _a, _b, _c, _d, _e;
-        const which = (_a = req.params.which) !== null && _a !== void 0 ? _a : 'primary';
+        const which = (_a = req.params.which) !== null && _a !== void 0 ? _a : 'clipboard';
         const clip = (_c = (_b = req.body) === null || _b === void 0 ? void 0 : _b.clip) !== null && _c !== void 0 ? _c : '';
         const target = (_e = (_d = req.body) === null || _d === void 0 ? void 0 : _d.target) !== null && _e !== void 0 ? _e : 'text/plain';
         const display = process.env.DISPLAY;
         console.log(`Copying to ${which} clipboard on display ${display}`);
-        console.debug(clip);
+        console.debug(req.body);
         // use xclip to set the clipboard.
         try {
-            const xargs = ['-l', '1', '-silent', '-selection', which];
+            const xargs = ['-l', '1', '-selection', which];
             if (MimeTypes.includes(target)) {
                 xargs.push('-t', target);
             }
@@ -53,9 +53,10 @@ class XclipClient {
             });
             xclip.unref();
             res.send({ status: 200, message: 'Clipboard set', clip: clip, target, display, });
+            console.log(`Clipboard set to: ${clip}`);
         }
         catch (e) {
-            console.log(e);
+            console.error(e);
             res.send({ status: 500, message: 'Exception setting clipboard', error: e });
         }
     }

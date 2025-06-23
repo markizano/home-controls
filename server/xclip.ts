@@ -27,7 +27,7 @@ export class XclipClient {
     }
 
     getClipboard(req: Request, res: Response): void {
-        const which = <Xclipboards>req.params.which ?? 'primary';
+        const which = <Xclipboards>req.params.which ?? 'clipboard';
         // use xclip to fetch what's on the clipboard.
         exec(`xclip -o -selection '${which}'`, (err: ExecException|null, stdout: string, stderr: string): void => {
             if (err) {
@@ -40,7 +40,7 @@ export class XclipClient {
     }
     
     setClipboard(req: Request, res: Response): void {
-        const which = <Xclipboards>req.params.which ?? 'primary';
+        const which = <Xclipboards>req.params.which ?? 'clipboard';
         const clip = req.body?.clip ?? '';
         const target = req.body?.target ?? 'text/plain';
         const display = process.env.DISPLAY;

@@ -19,11 +19,13 @@ const dotenv_1 = require("dotenv");
 (0, dotenv_1.config)();
 const paclient_1 = require("./paclient");
 const xclip_1 = require("./xclip");
+const control_1 = require("./control");
 const PORT = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 41173;
 const app = (0, express_1.default)();
-const pc = new paclient_1.PaClient(app);
-const xclip = new xclip_1.XclipClient(app);
 app.use(express_1.default.json());
+new paclient_1.PaClient(app);
+new xclip_1.XclipClient(app);
+new control_1.ControlsClient(app);
 if ('WEBROOT' in process.env && process.env.WEBROOT) {
     app.use(express_1.default.static(process.env.WEBROOT));
     console.log(`Serving static content from ${process.env.WEBROOT}`);
@@ -42,7 +44,3 @@ process.on('SIGINT', () => {
     console.log('Caught interrupt signal');
     process.exit(0);
 });
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield pc.connect();
-    app.emit('ready');
-}))();
