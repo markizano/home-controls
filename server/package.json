@@ -11,9 +11,10 @@
   "author": "Markizano Draconus <markizano@markizano.net>",
   "license": "UNLICENSED",
   "dependencies": {
-    "@tmigone/pulseaudio": "^1.0.5",
+    "@tmigone/pulseaudio": "github:markizano/pulseaudio-ts",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "off": "^0.0.10",
     "paclient": "^0.0.2"
   },
   "devDependencies": {
