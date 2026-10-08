@@ -11,14 +11,13 @@
   "author": "Markizano Draconus <markizano@markizano.net>",
   "license": "UNLICENSED",
   "dependencies": {
+    "@dotenvx/dotenvx": "^2.26.1",
     "@tmigone/pulseaudio": "github:markizano/pulseaudio-ts",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "off": "^0.0.10",
+    "express": "^5.2.1",
     "paclient": "^0.0.2"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
-    "typescript": "^5.5.2"
+    "@types/express": "^4.17.25",
+    "typescript": "^5.9.3"
   }
 }
