@@ -1,10 +1,9 @@
 #!/usr/bin/env ts-node
 
+import * as dotenvx from '@dotenvx/dotenvx';
+dotenvx.config({ ignore: ['MISSING_ENV_FILE'] });
+
 import express from 'express';
-import { config } from 'dotenv';
-
-config();
-
 import { PaClient } from './paclient';
 import { XclipClient } from './xclip';
 import { ControlsClient } from './control';
@@ -28,11 +27,8 @@ app.post('/api/shutdown', (req, res) => {
     process.exit(0);
 });
 
-app.on('ready', () => {
-    console.log('PulseAudio client is ready');
-    app.listen(PORT, async () => {
-        console.log(`Server is running on port ${PORT}`);
-    });
+app.listen(PORT, async () => {
+    console.log(`Server is running on port ${PORT}`);
 });
 
 process.on('SIGINT', () => {
