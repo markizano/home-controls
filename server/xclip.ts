@@ -38,7 +38,7 @@ export class XclipClient {
             }
         });
     }
-    
+
     setClipboard(req: Request, res: Response): void {
         const which = <Xclipboards>req.params.which ?? 'clipboard';
         const clip = req.body?.clip ?? '';
