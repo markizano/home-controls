@@ -1,16 +1,5 @@
 import { Express, Request, Response } from 'express';
-import { exec, ExecException, spawn } from 'node:child_process';
-
-/**
- * @property {string[]} Xclipboards valid xclip clipboards.
- */
-// const Xclipboards = ['primary', 'secondary', 'clipboard'];
-type Xclipboards = 'primary' | 'secondary' | 'clipboard';
-
-/**
- * @property {string[]} MimeTypes valid mime types accepted this will handle.
- */
-const MimeTypes = ['image/png', 'image/jpg', 'image/gif'];
+import { exec, ExecException } from 'node:child_process';
 
 /**
  * @class XclipClient
